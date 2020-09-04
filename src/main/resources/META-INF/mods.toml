@@ -1,0 +1,16 @@
+modLoader="javafml"
+
+loaderVersion="[33,)"
+license="BSD-3-Clause License"
+
+[[mods]]
+modId="slide_show"
+version="${file.jarVersion}"
+displayName="Slide Show"
+
+# We will come back later.
+credits=""
+
+authors="3TUSK"
+
+description="Simple slide show projector in Minecraft."

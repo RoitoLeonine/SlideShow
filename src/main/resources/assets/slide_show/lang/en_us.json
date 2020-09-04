@@ -1,0 +1,11 @@
+{
+    "block.slide_show.projector": "Slide Show Projector",
+
+    "gui.slide_show.url": "Image Link",
+    "gui.slide_show.color": "Color",
+    "gui.slide_show.width": "Width",
+    "gui.slide_show.height": "Height",
+    "gui.slide_show.offset_x": "Offset X",
+    "gui.slide_show.offset_y": "Offset Y",
+    "gui.slide_show.offset_z": "Offset Z"
+}
