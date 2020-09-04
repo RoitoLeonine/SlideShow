@@ -3,9 +3,11 @@ package org.teacon.slides;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public final class SlideDataUtils {
+public final class SlideDataUtils
+{
 
-    public static void readFrom(SlideData data, CompoundNBT source) {
+    public static void readFrom(SlideData data, CompoundNBT source)
+    {
         data.imageLocation = source.getString("ImageLocation");
         data.color = source.getInt("Color");
         data.width = source.getFloat("Width");
@@ -15,7 +17,8 @@ public final class SlideDataUtils {
         data.offsetZ = source.getFloat("OffsetZ");
     }
 
-    public static void readFrom(SlideData data, PacketBuffer buffer) {
+    public static void readFrom(SlideData data, PacketBuffer buffer)
+    {
         data.imageLocation = buffer.readString(Short.MAX_VALUE);
         data.color = buffer.readInt();
         data.width = buffer.readFloat();
@@ -25,7 +28,8 @@ public final class SlideDataUtils {
         data.offsetZ = buffer.readFloat();
     }
 
-    public static CompoundNBT writeTo(SlideData data, CompoundNBT dest) {
+    public static CompoundNBT writeTo(SlideData data, CompoundNBT dest)
+    {
         dest.putString("ImageLocation", data.imageLocation);
         dest.putInt("Color", data.color);
         dest.putFloat("Width", data.width);
@@ -36,7 +40,8 @@ public final class SlideDataUtils {
         return dest;
     }
 
-    public static PacketBuffer writeTo(SlideData data, PacketBuffer buffer) {
+    public static PacketBuffer writeTo(SlideData data, PacketBuffer buffer)
+    {
         buffer.writeString(data.imageLocation, Short.MAX_VALUE);
         buffer.writeInt(data.color);
         buffer.writeFloat(data.width);

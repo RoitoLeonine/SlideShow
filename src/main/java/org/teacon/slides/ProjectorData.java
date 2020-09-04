@@ -34,14 +34,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public final class ProjectorData {
+public final class ProjectorData
+{
 
-    public static final class Entry {
+    public static final class Entry
+    {
 
         final DynamicTexture texture;
         final RenderType renderType;
 
-        public Entry(NativeImage image, TextureManager manager) {
+        public Entry(NativeImage image, TextureManager manager)
+        {
             this.texture = new DynamicTexture(image);
             this.renderType = slide(manager.getDynamicTextureLocation("slide_show", this.texture));
         }
@@ -60,24 +63,34 @@ public final class ProjectorData {
     static final Path LOCAL_CACHE_PATH = Paths.get("slideshow");
     static final Path CACHE_MAP_PATH = LOCAL_CACHE_PATH.resolve("map.json");
 
-    static {
-        if (!Files.exists(LOCAL_CACHE_PATH)) {
-            try {
+    static
+    {
+        if (!Files.exists(LOCAL_CACHE_PATH))
+        {
+            try
+            {
                 Files.createDirectories(LOCAL_CACHE_PATH);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 throw new ReportedException(new CrashReport("Failed to create slide show cache directory", e));
             }
         }
-        if (Files.exists(CACHE_MAP_PATH)) {
-            try {
+        if (Files.exists(CACHE_MAP_PATH))
+        {
+            try
+            {
                 LOCAL_CACHE_MAP.putAll(
                         gson.fromJson(
                                 new String(Files.readAllBytes(CACHE_MAP_PATH), StandardCharsets.UTF_8),
-                                new TypeToken<Map<String, String>>() {
+                                new TypeToken<Map<String, String>>()
+                                {
                                 }.getType()
                         )
                 );
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 throw new ReportedException(new CrashReport("Failed to read slide show cache map", e));
             }
         }
@@ -87,13 +100,15 @@ public final class ProjectorData {
     private static final RenderState.AlphaState ALPHA = new RenderState.AlphaState(1F / 255F);
     private static final RenderState.CullState DISABLE_CULL = new RenderState.CullState(false);
     private static final RenderState.LightmapState ENABLE_LIGHTMAP = new RenderState.LightmapState(true);
-    private static final RenderState.TransparencyState TRANSLUCENT = new RenderState.TransparencyState("translucent", () -> {
+    private static final RenderState.TransparencyState TRANSLUCENT = new RenderState.TransparencyState("translucent", () ->
+    {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
     }, RenderSystem::disableBlend);
 
     // Similar to RenderType.getText but without culling.
-    private static RenderType slide(final ResourceLocation loc) {
+    private static RenderType slide(final ResourceLocation loc)
+    {
         return RenderType.makeType("slide_show", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256,
                 /*no delegate*/false, /*need sorting data*/true, RenderType.State.getBuilder()
                         .alpha(ALPHA)
@@ -104,30 +119,45 @@ public final class ProjectorData {
                         .build(false));
     }
 
-    public static RenderType getRenderType(String location, TextureManager manager) {
+    public static RenderType getRenderType(String location, TextureManager manager)
+    {
         Entry entry = CACHE.getIfPresent(location);
-        if (entry == null) {
-            synchronized (LOADING) {
-                if (!LOADING.contains(location)) {
+        if (entry == null)
+        {
+            synchronized (LOADING)
+            {
+                if (!LOADING.contains(location))
+                {
                     if (FAILED.contains(location)) return null;
                     LOADING.add(location);
-                    Util.getServerExecutor().execute(() -> {
-                        try {
-                            if (LOCAL_CACHE_MAP.containsKey(location)) {
+                    Util.getServerExecutor().execute(() ->
+                    {
+                        try
+                        {
+                            if (LOCAL_CACHE_MAP.containsKey(location))
+                            {
                                 // System.out.println("Local cache available for " + location);
-                                try {
+                                try
+                                {
                                     NativeImage image = readNativeImage(Files.readAllBytes(Paths.get(LOCAL_CACHE_MAP.get(location))));
                                     Minecraft.getInstance().deferTask(() -> CACHE.put(location, new Entry(image, manager)));
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e)
+                                {
                                     e.printStackTrace();
                                     LOCAL_CACHE_MAP.remove(location);
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 // System.out.println("Downloading " + location);
                                 byte[] imageBytes;
-                                try {
+                                try
+                                {
                                     imageBytes = IOUtils.toByteArray(new URI(location));
-                                } catch (Exception ex) {
+                                }
+                                catch (Exception ex)
+                                {
                                     FAILED.add(location);
                                     ex.printStackTrace();
                                     return;
@@ -139,9 +169,13 @@ public final class ProjectorData {
                                 NativeImage image = readNativeImage(imageBytes);
                                 Minecraft.getInstance().deferTask(() -> CACHE.put(location, new Entry(image, manager)));
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e)
+                        {
                             e.printStackTrace();
-                        } finally {
+                        }
+                        finally
+                        {
                             LOADING.remove(location);
                         }
                     });
@@ -152,15 +186,20 @@ public final class ProjectorData {
         return entry.renderType;
     }
 
-    private static NativeImage readNativeImage(byte[] bytes) throws IOException {
+    private static NativeImage readNativeImage(byte[] bytes) throws IOException
+    {
         return NativeImage.read(new ByteArrayInputStream(bytes));
     }
 
-    private synchronized static void saveCacheMapJson() {
+    private synchronized static void saveCacheMapJson()
+    {
         String json = gson.toJson(LOCAL_CACHE_MAP);
-        try {
+        try
+        {
             Files.write(CACHE_MAP_PATH, json.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             throw new ReportedException(new CrashReport("Failed to save slideshow cache map", e));
         }
     }

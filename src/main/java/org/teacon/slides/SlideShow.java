@@ -28,23 +28,25 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @Mod("slide_show")
-public final class SlideShow {
+public final class SlideShow
+{
 
     public static Block projector;
 
-    /** 
-     * The networking channel version. Since we follow SemVer, this is 
-     * always the same as the MAJOR version of the mod version. 
+    /**
+     * The networking channel version. Since we follow SemVer, this is
+     * always the same as the MAJOR version of the mod version.
      */ // Remember to update the network version when MAJOR is bumped
     private static final String NETWORK_VERSION = "0";
     public static SimpleChannel channel = NetworkRegistry.ChannelBuilder
-        .named(new ResourceLocation("silde_show", "network"))
-        .networkProtocolVersion(() -> NETWORK_VERSION)
-        .clientAcceptedVersions(NETWORK_VERSION::equals)
-        .serverAcceptedVersions(NETWORK_VERSION::equals)
-        .simpleChannel();
-    
-    public SlideShow() {
+            .named(new ResourceLocation("silde_show", "network"))
+            .networkProtocolVersion(() -> NETWORK_VERSION)
+            .clientAcceptedVersions(NETWORK_VERSION::equals)
+            .serverAcceptedVersions(NETWORK_VERSION::equals)
+            .simpleChannel();
+
+    public SlideShow()
+    {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addGenericListener(Block.class, SlideShow::regBlock);
         bus.addGenericListener(Item.class, SlideShow::regItem);
@@ -53,41 +55,48 @@ public final class SlideShow {
         bus.addListener(SlideShow::setup);
     }
 
-    public static void regBlock(final RegistryEvent.Register<Block> event) {
+    public static void regBlock(final RegistryEvent.Register<Block> event)
+    {
         event.getRegistry().register(
-            (projector = new ProjectorBlock(Block.Properties.create(Material.IRON)
-                .hardnessAndResistance(20F)
-                .harvestLevel(0)
-                .setLightLevel(state -> 15) // TODO Configurable
-                .notSolid())).setRegistryName("slide_show:projector")
+                (projector = new ProjectorBlock(Block.Properties.create(Material.IRON)
+                        .hardnessAndResistance(20F)
+                        .harvestLevel(0)
+                        .setLightLevel(state -> 15) // TODO Configurable
+                        .notSolid())).setRegistryName("slide_show:projector")
         );
     }
 
-    public static void regContainer(final RegistryEvent.Register<ContainerType<?>> event) {
+    public static void regContainer(final RegistryEvent.Register<ContainerType<?>> event)
+    {
         event.getRegistry().register(IForgeContainerType.create(ProjectorControlContainer::new)
-            .setRegistryName("slide_show:projector"));
+                .setRegistryName("slide_show:projector"));
     }
 
-    public static void regItem(final RegistryEvent.Register<Item> event) {
+    public static void regItem(final RegistryEvent.Register<Item> event)
+    {
         event.getRegistry().register(new BlockItem(projector, new Item.Properties()
-            .group(ItemGroup.MISC).rarity(Rarity.RARE)).setRegistryName("slide_show:projector"));
+                .group(ItemGroup.MISC).rarity(Rarity.RARE)).setRegistryName("slide_show:projector"));
     }
 
-    public static void regTile(final RegistryEvent.Register<TileEntityType<?>> event) {
+    public static void regTile(final RegistryEvent.Register<TileEntityType<?>> event)
+    {
         event.getRegistry().register(TileEntityType.Builder.create(ProjectorTileEntity::new, projector)
-            .build(null).setRegistryName("slide_show:projector"));
+                .build(null).setRegistryName("slide_show:projector"));
     }
 
-    public static void setup(final FMLCommonSetupEvent event) {
+    public static void setup(final FMLCommonSetupEvent event)
+    {
         PermissionAPI.registerNode("slide_show.interact.projector", DefaultPermissionLevel.ALL, "");
         int index = 0;
         channel.registerMessage(index++, UpdateImageInfoPacket.class, UpdateImageInfoPacket::write, UpdateImageInfoPacket::new, UpdateImageInfoPacket::handle);
     }
 
     @Mod.EventBusSubscriber(modid = "slide_show", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static final class ClientSetup {
+    public static final class ClientSetup
+    {
         @SubscribeEvent
-        public static void setup(final FMLClientSetupEvent event) {
+        public static void setup(final FMLClientSetupEvent event)
+        {
             RenderTypeLookup.setRenderLayer(projector, RenderType.getCutout());
             ClientRegistry.bindTileEntityRenderer(ProjectorTileEntity.theType, ProjectorRenderer::new);
             ScreenManager.registerFactory(ProjectorControlContainer.theType, ProjectorControlScreen::new);
