@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.3.0'
+version = '0.3.0-1.16.2'
 group = 'org.teaconmc'
 archivesBaseName = 'SlideShow'
 
@@ -92,13 +92,47 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
 }
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact jar
+        release(MavenPublication) {
+            groupId = "org.teacon"
+            artifactId = "SlideShow-Forge-1.16.2"
+
+            artifact reobfArtifact
+            pom {
+                name = 'SlideShow for Minecraft 1.16.2'
+                description = 'Minecraft mod, adding a projector that can display online images.'
+                url = 'https://github.com/RoitoLeonine/SlideShow'
+                licenses {
+                    license {
+                        name = 'BSD-3-Clause'
+                        url = 'https://github.com/RoitoLeonine/SlideShow/blob/1.16-forge/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = '3TUSK'
+                        name = '3TUSK'
+                    }
+                }
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = 'https://github.com/RoitoLeonine/SlideShow/issues'
+                }
+                scm {
+                    url = 'https://github.com/RoitoLeonine/SlideShow'
+                    connection = 'scm:git:git://github.com/RoitoLeonine/SlideShow.git'
+                    developerConnection = 'scm:git:git@github.com:RoitoLeonine/SlideShow.git'
+                }
+            }
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "archive"
+            url = "http://maven.lemonslice.cloud/releases"
+            credentials {
+                username = System.env.MAVEN_USERNAME
+                password = System.env.MAVEN_PASSWORD
+            }
         }
     }
 }
