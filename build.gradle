@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.3.0-1.16.2'
+version = '0.3.0'
 group = 'org.teaconmc'
 archivesBaseName = 'SlideShow'
 
@@ -140,18 +140,5 @@ publishing {
 tasks.withType(PublishToMavenRepository) {
     onlyIf {
         System.env.MAVEN_USERNAME && System.env.MAVEN_PASSWORD
-    }
-}
-
-/**
- * A simple task to pass down the artifact name and path to other GitHub actions.
- */
-task("githubActionOutput") {
-    onlyIf {
-        System.env.GITHUB_ACTIONS
-    }
-    doLast {
-        println "::set-output name=artifact_path::$buildDir/reobfJar/output.jar"
-        println "::set-output name=artifact_name::$archivesBaseName-${version}.jar"
     }
 }
