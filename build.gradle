@@ -93,7 +93,7 @@ def reobfArtifact = artifacts.add('default', reobfFile) {
 publishing {
     publications {
         release(MavenPublication) {
-            groupId = "org.teacon"
+            groupId = "org.teacon.slideshow"
             artifactId = "SlideShow-Forge-1.16.2"
 
             artifact reobfArtifact
